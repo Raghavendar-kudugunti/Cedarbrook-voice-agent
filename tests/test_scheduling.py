@@ -293,3 +293,58 @@ def test_lapsed_hold_is_retaken_if_free_else_slot_taken(s):
     with pytest.raises(ToolError) as e:
         s.book(a, hold["hold_id"])
     assert e.value.code == "slot_taken"
+
+
+
+def test_booking_gets_a_short_spoken_reference(s):
+    seeded = [a["booking_ref"] for a in s.appointments(active_only=False)]
+    assert seeded and all(r.startswith("CB") and r[2:].isdigit() for r in seeded)
+    assert len(set(seeded)) == len(seeded)
+    call = s.start_call("text")
+    booked, slot = confirmed_booking(s, call, name="Asha Rao", phone="9000000011")
+    ref = booked["booking_ref"]
+    assert ref.startswith("CB") and ref not in seeded
+    assert booked["spoken_ref"] == " ".join(ref)            # read letter by letter, digit by digit
+    assert booked["appointment"]["booking_ref"] == ref
+    assert s.end_call(call, "agent_end")["booking_ref"] == ref
+
+
+def test_reference_added_to_an_older_database(tmp_path, monkeypatch):
+    import sqlite3
+    monkeypatch.setenv("CLINIC_TODAY", TODAY)
+    path = str(tmp_path / "old.db")
+    Scheduler(path)
+    with sqlite3.connect(path) as c:  # rows written before the column existed have no reference
+        c.execute("UPDATE appointments SET ref=NULL")
+    assert all(a["booking_ref"] for a in Scheduler(path).appointments(active_only=False))
+
+
+def test_closing_message_says_the_id_twice_in_each_language():
+    from agent.core import closing_message
+    appt = {"doctor": "Dr. Suresh Kulkarni", "spoken": "Wednesday, 25 November at half past ten in the morning"}
+    for lang in ("en", "hi", "mr"):
+        msg = closing_message("booked", lang, appt, "C B 1 0 0 5")
+        assert msg.count("C B 1 0 0 5") == 2 and "Kulkarni" in msg
+
+
+def test_calls_whose_worker_died_are_closed(s):
+    import time as _t
+    live = s.start_call("voice")
+    s.add_transcript(live, "caller", "hello")
+    dead = s.start_call("voice")
+    s.add_transcript(dead, "caller", "hello")
+    old = _t.time() - 600
+    with s._conn() as c:  # the worker was killed 10 minutes ago, mid-call
+        c.execute("UPDATE calls SET started_at=? WHERE id IN (?,?)", (old, live, dead))
+        c.execute("UPDATE transcript SET ts=? WHERE call_id=?", (old, dead))
+    assert s.close_stale_calls() == [dead]
+    with s._conn() as c:
+        statuses = {r["id"]: r["status"] for r in c.execute("SELECT id, status FROM calls")}
+    assert statuses[dead] == "ended" and statuses[live] == "live"
+    assert json_record(s, dead)["end_reason"] == "connection_lost"
+
+
+def json_record(s, call_id):
+    import json as _j
+    with s._conn() as c:
+        return _j.loads(c.execute("SELECT record FROM calls WHERE id=?", (call_id,)).fetchone()[0])

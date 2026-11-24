@@ -5,7 +5,9 @@ services:
     env_file: .env
     environment:
       DATABASE_PATH: /data/cedarbrook.db
-    volumes: ["appointments:/data"]
+    # ./data is the same database a local `uvicorn` run uses, so Docker and VS Code share one set of calls.
+    # ./frontend is served live: page edits show on refresh without a rebuild (Python changes still need --build).
+    volumes: ["./data:/data", "./frontend:/app/frontend:ro"]
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/api/health')"]
@@ -23,6 +25,3 @@ services:
     depends_on:
       api: { condition: service_healthy }
     restart: unless-stopped
-
-volumes:
-  appointments:

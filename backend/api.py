@@ -52,11 +52,13 @@ async def tool_error(_req, exc: ToolError):
 # ---------------- public ----------------
 @app.get("/api/health")
 def health():
+    google = os.getenv("LLM_PROVIDER", "groq").strip().lower() == "google"
     voice_keys = ["LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET", "DEEPGRAM_API_KEY", "CARTESIA_API_KEY",
-                  "OPENAI_API_KEY"]
+                  "GOOGLE_API_KEY" if google else "OPENAI_API_KEY"]
     missing = [k for k in voice_keys if not os.getenv(k)]
+    model = os.getenv("LLM_MODEL") or ("gemini-3.8-flash" if google else "openai/gpt-oss-120b")
     return {"ok": True, "today_ist": d.today_ist().isoformat(), "voice_ready": not missing, "missing": missing,
-            "langfuse": telemetry.enabled(), "llm_model": os.getenv("LLM_MODEL", "openai/gpt-oss-120b")}
+            "langfuse": telemetry.enabled(), "llm_provider": "google" if google else "groq", "llm_model": model}
 
 
 @app.get("/api/doctors")

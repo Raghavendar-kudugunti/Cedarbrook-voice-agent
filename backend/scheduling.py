@@ -170,6 +170,11 @@ class Scheduler:
             Path(self.path).parent.mkdir(parents=True, exist_ok=True)
         with self._conn() as c:
             c.executescript(SCHEMA)
+            # booking reference the caller is given (CB1005); added to older databases in place
+            if "ref" not in {r[1] for r in c.execute("PRAGMA table_info(appointments)")}:
+                c.execute("ALTER TABLE appointments ADD COLUMN ref TEXT")
+            c.execute("UPDATE appointments SET ref = 'CB' || (1000 + rowid) WHERE ref IS NULL")
+            c.execute("CREATE UNIQUE INDEX IF NOT EXISTS appointment_ref ON appointments(ref)")
         if seed_demo:
             self.seed_demo_patients()
 
@@ -433,6 +438,7 @@ class Scheduler:
             "date": r["appt_date"], "time": r["appt_time"],
             "spoken": f"{d.spoken_date(day)} at {d.spoken_time(r['appt_time'])}",
             "status": r["status"], "phone_last4": r["phone"][-4:],
+            "booking_ref": r["ref"] if "ref" in r.keys() else None,
         }
 
     # ---------- read-back / confirmation gate ----------
@@ -582,15 +588,14 @@ class Scheduler:
             c.execute("UPDATE slot_locks SET kind='appointment', ref=?, expires_at=NULL WHERE slot_id=? AND ref=?",
                       (appt_id, hold["slot_id"], hold_id))
             c.execute("DELETE FROM holds WHERE id=?", (hold_id,))
-            c.execute("INSERT INTO appointments VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                      (appt_id, hold["slot_id"], doc_id, day.isoformat(), hhmm, name, pkey, phone, age, "active",
-                       call_id, now, now))
+            _insert_appointment(c, (appt_id, hold["slot_id"], doc_id, day.isoformat(), hhmm, name, pkey, phone, age,
+                                    "active", call_id, now, now))
             sv = slot_view(hold["slot_id"])
             summary = f"Booked {sv['doctor']} ({sv['department'].lower()}), {d.spoken_date(day)}, {hhmm} for {d.first_name(name)}."
             c.execute("INSERT INTO call_actions VALUES(?,?,?,?,?,?,?)", (call_id, now, "book", appt_id, rb_id, 1, summary))
             row = c.execute("SELECT * FROM appointments WHERE id=?", (appt_id,)).fetchone()
-            resp = {"ok": True, "appointment": self._appt_view(row),
-                    "say": f"Done. Your appointment ID is {' '.join(appt_id.split('-')[-1])}. Please arrive 15 minutes early."}
+            resp = {"ok": True, "appointment": self._appt_view(row), "booking_ref": row["ref"],
+                    "spoken_ref": spoken_ref(row["ref"])}
             self._idem_put(c, key, resp)
             self._idem_put(c, alias, resp)
         return resp
@@ -625,7 +630,8 @@ class Scheduler:
             c.execute("INSERT INTO call_actions VALUES(?,?,?,?,?,?,?)",
                       (call_id, now, "reschedule", appointment_id, rb_id, 1, summary))
             row = c.execute("SELECT * FROM appointments WHERE id=?", (appointment_id,)).fetchone()
-            resp = {"ok": True, "appointment": self._appt_view(row), "old_slot_released": old_slot}
+            resp = {"ok": True, "appointment": self._appt_view(row), "old_slot_released": old_slot,
+                    "booking_ref": row["ref"], "spoken_ref": spoken_ref(row["ref"])}
             self._idem_put(c, key, resp)
             self._idem_put(c, alias, resp)
         return resp
@@ -708,7 +714,7 @@ class Scheduler:
             outcome = "transferred"
         elif actions:
             outcome = {"book": "booked", "reschedule": "rescheduled", "cancel": "cancelled"}[actions[-1]["action"]]
-        elif end_reason in {"silence_timeout", "caller_hangup"} and any(
+        elif end_reason in {"silence_timeout", "caller_hangup", "connection_lost"} and any(
                 t in tools for t in ("get_slots", "hold_slot", "prepare_confirmation", "find_appointments")):
             outcome = "abandoned"
         else:
@@ -743,6 +749,8 @@ class Scheduler:
             "intent": intent,
             "outcome": outcome,
             "appointment_id": actions[-1]["appointment_id"] if actions else None,
+            "booking_ref": (c.execute("SELECT ref FROM appointments WHERE id=?", (actions[-1]["appointment_id"],))
+                            .fetchone() or [None])[0] if actions else None,
             "transfer_reason": transfers[0]["reason"] if transfers else None,
             "confirmed_before_commit": all(a["confirmed"] and a["readback_id"] for a in actions) if actions else None,
             "turns": n_user,
@@ -756,7 +764,26 @@ class Scheduler:
         }
 
     # ---------------- staff view ----------------
+    STALE_CALL_S = int(os.getenv("STALE_CALL_SECONDS", "180"))
+
+    def close_stale_calls(self) -> list[str]:
+        """Calls still marked live with no transcript, turn or tool activity for STALE_CALL_S seconds lost their
+        worker (restart, crash, network): the 6 s silence rule would have ended a real call long before. Close
+        them with end_reason 'connection_lost' so the console stops showing them as on a call."""
+        cutoff = time.time() - self.STALE_CALL_S
+        with self._conn() as c:
+            stale = [r["id"] for r in c.execute(
+                "SELECT ca.id FROM calls ca WHERE ca.status='live' AND ca.started_at < ? AND "
+                "COALESCE((SELECT MAX(ts) FROM transcript WHERE call_id=ca.id), 0) < ? AND "
+                "COALESCE((SELECT MAX(created_at) FROM turns WHERE call_id=ca.id), 0) < ? AND "
+                "COALESCE((SELECT MAX(ts) FROM tool_log WHERE call_id=ca.id), 0) < ?",
+                (cutoff, cutoff, cutoff, cutoff))]
+        for call_id in stale:
+            self.end_call(call_id, "connection_lost")
+        return stale
+
     def dashboard(self) -> dict:
+        self.close_stale_calls()
         today_start = datetime.combine(datetime.now(d.IST).date(), datetime.min.time(), d.IST).timestamp()
         with self._conn() as c:
             calls = c.execute("SELECT * FROM calls WHERE started_at>=? ORDER BY started_at DESC LIMIT 200",
@@ -839,13 +866,30 @@ class Scheduler:
                         appt_id = self._next_appt_id(c, day)
                         now = time.time()
                         c.execute("INSERT INTO slot_locks VALUES(?,?,?,?,?)", (sid, "appointment", appt_id, None, None))
-                        c.execute("INSERT INTO appointments VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                                  (appt_id, sid, doc_id, day.isoformat(), hhmm, name, pkey, phone, age, "active",
-                                   "seed", now, now))
+                        _insert_appointment(c, (appt_id, sid, doc_id, day.isoformat(), hhmm, name, pkey, phone, age,
+                                                "active", "seed", now, now))
                         placed = True
                         break
                     if placed:
                         break
+
+
+APPT_COLUMNS = ("id, slot_id, doctor_id, appt_date, appt_time, patient_name, patient_key, phone, age, status, "
+                "call_id, created_at, updated_at")
+
+
+def _insert_appointment(c: sqlite3.Connection, values: tuple) -> str:
+    """Insert an appointment and give it its booking reference: 'CB' + (1000 + rowid), unique and short
+    enough to say aloud. Returns the reference."""
+    cur = c.execute(f"INSERT INTO appointments({APPT_COLUMNS}) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)", values)
+    ref = f"CB{1000 + cur.lastrowid}"
+    c.execute("UPDATE appointments SET ref=? WHERE rowid=?", (ref, cur.lastrowid))
+    return ref
+
+
+def spoken_ref(ref: str) -> str:
+    """'CB1005' -> 'C B 1 0 0 5', so TTS reads it letter by letter and digit by digit."""
+    return " ".join(ref)
 
 
 def _pct(values: list[float], p: int) -> int | None:

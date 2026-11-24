@@ -7,6 +7,33 @@ const main = $("main");
 let room = null;
 let startedAt = 0, timerId = 0, callId = null;
 
+const themeToggle = $("themeToggle");
+const themeLabel = $("themeLabel");
+const colorScheme = matchMedia("(prefers-color-scheme: dark)");
+let savedTheme = null;
+try { savedTheme = localStorage.getItem("cedarbrook-theme"); } catch {}
+if (savedTheme !== "dark" && savedTheme !== "light") savedTheme = null;
+
+function applyTheme(theme, save = false) {
+  const dark = theme === "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  themeToggle.setAttribute("aria-pressed", String(dark));
+  themeToggle.setAttribute("aria-label", `Switch to ${dark ? "light" : "dark"} mode`);
+  themeLabel.textContent = dark ? "Light mode" : "Dark mode";
+  if (save) {
+    savedTheme = dark ? "dark" : "light";
+    try { localStorage.setItem("cedarbrook-theme", savedTheme); } catch {}
+  }
+  window.dispatchEvent(new Event("cedarbrook-theme-change"));
+}
+
+applyTheme(savedTheme || (colorScheme.matches ? "dark" : "light"));
+themeToggle.addEventListener("click", () => applyTheme(
+  document.documentElement.dataset.theme === "dark" ? "light" : "dark", true));
+colorScheme.addEventListener("change", (event) => {
+  if (!savedTheme) applyTheme(event.matches ? "dark" : "light");
+});
+
 const STATUS = {
   idle: "Tap to talk to our appointment assistant.",
   connecting: "Connecting… allow the microphone when your browser asks.",
@@ -94,6 +121,13 @@ function showOutcome(r) {
   const h = document.createElement("h2"); h.textContent = title;
   const p = document.createElement("p"); p.textContent = body;
   box.append(h, p);
+  if (r.booking_ref && (r.outcome === "booked" || r.outcome === "rescheduled")) {
+    const id = document.createElement("p");
+    id.className = "ref";
+    id.innerHTML = "Booking ID <b></b>";
+    id.querySelector("b").textContent = r.booking_ref;
+    box.append(id);
+  }
   box.hidden = false;
 }
 
@@ -112,6 +146,7 @@ const ring = (() => {
   const readColours = () => { colours = { teal: css("--teal"), mari: css("--marigold"), rule: css("--rule"), soft: css("--ink-soft") }; };
   readColours();
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColours);
+  window.addEventListener("cedarbrook-theme-change", readColours);
 
   function size() {
     const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);

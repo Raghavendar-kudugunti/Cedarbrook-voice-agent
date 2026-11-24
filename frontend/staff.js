@@ -143,6 +143,7 @@ async function openCall(id) {
     <dl class="facts">
       <dt>Outcome</dt><dd>${esc(OUTCOME[r.outcome] || r.outcome)}${r.transfer_reason ? ` (${esc(REASON[r.transfer_reason] || r.transfer_reason)})` : ""}</dd>
       <dt>Summary</dt><dd>${esc(r.summary)}</dd>
+      ${r.booking_ref ? `<dt>Booking ID</dt><dd>${esc(r.booking_ref)}</dd>` : ""}
       ${r.appointment_id ? `<dt>Appointment</dt><dd>${esc(r.appointment_id)}</dd>` : ""}
       <dt>Read back before change</dt><dd>${r.confirmed_before_commit == null ? "No change made" : r.confirmed_before_commit ? "Yes" : "No"}</dd>
       <dt>Caller turns</dt><dd>${r.turns}, interrupted ${r.barge_ins} times</dd>

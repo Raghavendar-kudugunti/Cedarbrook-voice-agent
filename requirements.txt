@@ -1,4 +1,4 @@
-livekit-agents[deepgram,cartesia,silero,openai,turn-detector]==1.8.13
+livekit-agents[deepgram,cartesia,silero,openai,google,turn-detector]==1.8.13
 livekit-api>=1.0,<2
 fastapi>=0.115,<1
 uvicorn[standard]>=0.30,<1

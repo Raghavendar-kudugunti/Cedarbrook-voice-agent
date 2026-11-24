@@ -29,8 +29,19 @@ SILENCE_S = float(os.getenv("SILENCE_SECONDS", "6"))
 MAX_CALL_S = float(os.getenv("MAX_CALL_SECONDS", "300"))
 
 
-def build_llm(model: str | None = None) -> openai.LLM:
-    model = model or os.getenv("LLM_MODEL", "openai/gpt-oss-120b")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").strip().lower()  # groq (any OpenAI-compatible API) or google
+
+
+def default_model() -> str:
+    return os.getenv("LLM_MODEL") or ("gemini-3.8-flash" if LLM_PROVIDER == "google" else "openai/gpt-oss-120b")
+
+
+def build_llm(model: str | None = None) -> llm.LLM:
+    model = model or default_model()
+    if LLM_PROVIDER == "google":
+        # Google Gemini through its own plugin (native tool calling); key from Google AI Studio
+        from livekit.plugins import google
+        return google.LLM(model=model, api_key=os.environ["GOOGLE_API_KEY"], temperature=0.3)
     kwargs = dict(model=model, base_url=os.getenv("OPENAI_BASE_URL", "https://api.groq.com/openai/v1"),
                   api_key=os.environ["OPENAI_API_KEY"], temperature=0.3, parallel_tool_calls=False,
                   _strict_tool_schema=False)
@@ -44,7 +55,7 @@ def build_voice_llm():
     1-3 s', so waiting is right. A FallbackAdapter gave up after 0.2 s, and its background recovery probes
     spent the same token budget: that is what sent calls to the front desk mid-booking. Set
     LLM_FALLBACK_MODELS to opt back into fallbacks (e.g. on a paid tier)."""
-    names = [os.getenv("LLM_MODEL", "openai/gpt-oss-120b")] + [
+    names = [default_model()] + [
         m.strip() for m in os.getenv("LLM_FALLBACK_MODELS", "").split(",") if m.strip()]
     models = [build_llm(m) for m in dict.fromkeys(names)]
     if len(models) == 1:

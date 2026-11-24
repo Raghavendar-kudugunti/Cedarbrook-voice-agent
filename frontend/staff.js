@@ -73,11 +73,22 @@ function renderLatency(L) {
     <div><dt>Turns measured</dt><dd>${L.turns}</dd></div>`;
 }
 
+const inr = (v) => "₹" + (Math.round(v * 100) / 100).toFixed(2);
+
 function renderCalls(calls, counts) {
   const n = (k) => counts[k] || 0;
   $("tally").innerHTML = calls.length
     ? `<b>${calls.length}</b> calls today: <b>${n("booked")}</b> booked, <b>${n("rescheduled")}</b> moved, <b>${n("cancelled")}</b> cancelled, <b>${n("transferred")}</b> transferred, <b>${n("no_action") + n("abandoned")}</b> with no change${n("live") ? `, <b>${n("live")}</b> on a call now` : ""}.`
     : "No calls yet today.";
+  const costs = calls.map((c) => (c.record || {}).cost_inr).filter((v) => typeof v === "number");
+  const total = costs.reduce((a, b) => a + b, 0);
+  const booked = n("booked") + n("rescheduled");
+  $("costs").innerHTML = costs.length
+    ? `<div><dt>Spent today</dt><dd>${inr(total)}</dd></div>
+       <div><dt>Average per call</dt><dd>${inr(total / costs.length)}</dd></div>
+       <div><dt>Per booking</dt><dd>${booked ? inr(total / booked) : "–"}</dd></div>
+       <div><dt>Most expensive call</dt><dd>${inr(Math.max(...costs))}</dd></div>`
+    : "";
   $("calls").innerHTML = calls.length ? calls.map((c) => {
     const r = c.record || {};
     const o = r.outcome || "live";
@@ -86,8 +97,9 @@ function renderCalls(calls, counts) {
     const what = o === "live" ? "In progress" : (r.summary || "").replace(/^Caller\s+/, "").replace(/^./, (x) => x.toUpperCase());
     return `<tr tabindex="0" data-call="${esc(c.call_id)}"><td class="when">${time}</td>
       <td><span class="out ${o}">${OUTCOME[o] || o}</span></td><td>${esc(what)}</td><td>${esc(langs)}</td>
-      <td class="num">${sec(r.latency_ms && r.latency_ms.p50)}</td></tr>`;
-  }).join("") : `<tr><td colspan="5" class="empty">Calls appear here as they come in.</td></tr>`;
+      <td class="num">${sec(r.latency_ms && r.latency_ms.p50)}</td>
+      <td class="num">${typeof r.cost_inr === "number" ? inr(r.cost_inr) : "–"}</td></tr>`;
+  }).join("") : `<tr><td colspan="6" class="empty">Calls appear here as they come in.</td></tr>`;
 }
 
 const last = { q: "", l: "", c: "" };

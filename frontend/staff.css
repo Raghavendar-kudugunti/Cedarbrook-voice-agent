@@ -56,6 +56,9 @@ h2 { font-size: 19px; margin: 0 0 10px; display: flex; align-items: baseline; ga
 .key.tts { background: var(--teal-deep); }
 .key.wait { background: var(--amber); }
 .total-line { grid-column: 1 / -1; }
+.costs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 12px; margin: 0 0 14px; }
+.costs:empty { display: none; }
+@media (max-width: 520px) { .costs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .stages, .today-lat { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 12px; margin: 0; }
 .today-lat { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--rule); }
 .stages div, .today-lat div { min-width: 0; }

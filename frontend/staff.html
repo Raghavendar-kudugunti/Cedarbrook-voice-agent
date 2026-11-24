@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap">
   <link rel="stylesheet" href="/static/base.css?v=2">
-  <link rel="stylesheet" href="/static/staff.css?v=2">
+  <link rel="stylesheet" href="/static/staff.css?v=3">
 </head>
 <body>
 <header class="top">
@@ -40,9 +40,10 @@
   <section class="calls" aria-labelledby="ch">
     <h2 id="ch">Today's calls</h2>
     <p class="tally" id="tally"></p>
+    <dl class="costs" id="costs" aria-label="Estimated provider cost today"></dl>
     <div class="table-wrap">
       <table>
-        <thead><tr><th scope="col">Time</th><th scope="col">Outcome</th><th scope="col">What happened</th><th scope="col">Language</th><th scope="col" class="num">Typical reply</th></tr></thead>
+        <thead><tr><th scope="col">Time</th><th scope="col">Outcome</th><th scope="col">What happened</th><th scope="col">Language</th><th scope="col" class="num">Typical reply</th><th scope="col" class="num">Cost</th></tr></thead>
         <tbody id="calls"></tbody>
       </table>
     </div>
@@ -62,6 +63,6 @@
   <div id="drawerBody"></div>
 </dialog>
 
-<script src="/static/staff.js?v=3"></script>
+<script src="/static/staff.js?v=4"></script>
 </body>
 </html>

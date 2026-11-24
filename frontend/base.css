@@ -1,0 +1,60 @@
+/* Shared tokens for the caller page and the staff console. */
+:root {
+  --paper: #f2f5f7;
+  --surface: #ffffff;
+  --ink: #1a2b33;
+  --ink-soft: #4f6470;
+  --rule: #d5dee3;
+  --teal: #00756f;
+  --teal-deep: #005a55;
+  --sky: #dcebef;
+  --red: #c4291c;
+  --red-wash: #fbe9e7;
+  --amber: #b26a00;
+  --amber-wash: #fdf1dc;
+  --on-teal: #ffffff;
+  --marigold: #d48a00;
+  --font: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Noto Sans Devanagari", system-ui, sans-serif;
+  --radius-s: 6px;
+  --radius-m: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1a1f;
+    --surface: #16242b;
+    --ink: #e4edf0;
+    --ink-soft: #9db2bb;
+    --rule: #2a3c45;
+    --teal: #3fb7ad;
+    --teal-deep: #6fd0c7;
+    --sky: #1c3640;
+    --red: #ff7a6e;
+    --red-wash: #3a1c19;
+    --amber: #f0b453;
+    --amber-wash: #382a12;
+    --on-teal: #06201e;
+    --marigold: #f2b441;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1a1f; --surface: #16242b; --ink: #e4edf0; --ink-soft: #9db2bb; --rule: #2a3c45;
+  --teal: #3fb7ad; --teal-deep: #6fd0c7; --sky: #1c3640; --red: #ff7a6e; --red-wash: #3a1c19;
+  --amber: #f0b453; --amber-wash: #382a12; --on-teal: #06201e; --marigold: #f2b441;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.5;
+}
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+a { color: var(--teal-deep); }
+button { font: inherit; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

@@ -1,0 +1,741 @@
+{
+ "ran_at": "2026-11-23 17:07:57",
+ "model": "openai/gpt-oss-20b",
+ "passed": 3,
+ "total": 10,
+ "public_passed": 3,
+ "public_total": 10,
+ "results": [
+  {
+   "passed": false,
+   "checks": {
+    "outcome": false,
+    "appointment_exists": false,
+    "readback_before_commit": false,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B01",
+   "title": "English, Dr. Anil Mehta, next available morning",
+   "seconds": 39.3,
+   "record": {
+    "call_id": "c_21fe24",
+    "language": [
+     "en"
+    ],
+    "intent": "book",
+    "outcome": "no_action",
+    "appointment_id": null,
+    "transfer_reason": null,
+    "confirmed_before_commit": null,
+    "turns": 3,
+    "latency_ms": {
+     "p50": 2136,
+     "p95": 17711
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.22,
+    "summary": "Enquiry only; no appointment changed.",
+    "end_reason": "agent_end",
+    "duration_s": 39.2,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Hi, I'd like to book an appointment with Dr. Anil Mehta, please."
+    },
+    {
+     "role": "agent",
+     "text": "Sure! Here are the next available slots with Dr. Anil Mehta:\n\n1. Wednesday, 18 November at quarter past nine in the morning  \n2. Wednesday, 18 November at quarter to ten in the morning  \n3. Wednesday, 18 November at half past eleven in the morning  \n\nWhich one would you like to book?"
+    },
+    {
+     "role": "caller",
+     "text": "I’ll take the first one, Wednesday at quarter past nine."
+    },
+    {
+     "role": "agent",
+     "text": "Great! Please tell me your full name."
+    },
+    {
+     "role": "agent",
+     "text": "May I have the patient’s full name, please?"
+    },
+    {
+     "role": "caller",
+     "text": "Priya Nair."
+    },
+    {
+     "role": "agent",
+     "text": "Great, thank you. Could you please give me the 10‑digit mobile number?"
+    }
+   ],
+   "tools": [
+    "search_doctors",
+    "get_slots",
+    "hold_slot",
+    "prepare_confirmation"
+   ]
+  },
+  {
+   "passed": true,
+   "checks": {
+    "outcome": true,
+    "appointment_exists": true,
+    "date": true,
+    "readback_before_commit": true,
+    "replied_in_hindi": true,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B02",
+   "title": "Hinglish skin doctor Friday evening",
+   "seconds": 249.3,
+   "record": {
+    "call_id": "c_ee478c",
+    "language": [
+     "hi",
+     "en"
+    ],
+    "intent": "book",
+    "outcome": "booked",
+    "appointment_id": "AP-20261120-0001",
+    "transfer_reason": null,
+    "confirmed_before_commit": true,
+    "turns": 6,
+    "latency_ms": {
+     "p50": 34340,
+     "p95": 39161
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.65,
+    "summary": "Caller booked Dr. Rekha Mehta (dermatology), Friday, 20 November, 16:45 for [Name].",
+    "end_reason": "agent_end",
+    "duration_s": 249.3,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Mujhe skin doctor chahiye, Friday shaam ko."
+    },
+    {
+     "role": "agent",
+     "text": "Sure, Dr. Rekha Mehta is available on Friday evening. Here are the slots for Friday, 20 November: 16:45, 17:00, and 18:00. Which time would you like?"
+    },
+    {
+     "role": "caller",
+     "text": "16:45 wala slot le lo."
+    },
+    {
+     "role": "agent",
+     "text": "Great, slot held. May I have your full name, please?"
+    },
+    {
+     "role": "agent",
+     "text": "कृपया अपना 10 अंकों का मोबाइल नंबर बताइए।"
+    },
+    {
+     "role": "caller",
+     "text": "9811122233"
+    },
+    {
+     "role": "agent",
+     "text": "Let me confirm: an appointment for [Name] with Dr. Rekha Mehta, Dermatology, on Tuesday, 17 November at quarter to five in the evening. Phone number 9 8 1 1 1, 2 2 2 3 3. The consultation fee is 900 rupees, paid at the hospital. Shall I book it?"
+    },
+    {
+     "role": "caller",
+     "text": "Na, date galat hai. Friday 20 November ko hai, Tuesday nahi."
+    },
+    {
+     "role": "agent",
+     "text": "ठीक है, शुक्रवार, 20 नवंबर को 16:45 का स्लॉट उपलब्ध है। क्या आप वही समय चुनना चाहेंगे?"
+    },
+    {
+     "role": "caller",
+     "text": "Haan, wahi time chahiye."
+    },
+    {
+     "role": "agent",
+     "text": "Great. Please tell me your full name."
+    },
+    {
+     "role": "agent",
+     "text": "Let me confirm: an appointment for [Name] with Dr. Rekha Mehta, Dermatology, on Friday, 20 November at quarter to five in the evening. Phone number 9 8 1 1 1, 2 2 2 3 3. The consultation fee is 900 rupees, paid at the hospital. Shall I book it?"
+    },
+    {
+     "role": "agent",
+     "text": "Let me confirm: an appointment for [Name] with Dr. Rekha Mehta, Dermatology, on Friday, 20 November at quarter to five in the evening. Phone number 9 8 1 1 1, 2 2 2 3 3. The consultation fee is 900 rupees, paid at the hospital. Shall I book it?"
+    },
+    {
+     "role": "caller",
+     "text": "Haan, sahi hai."
+    },
+    {
+     "role": "agent",
+     "text": "Done. Your appointment ID is 0 0 0 1. Please arrive 15 minutes early. Have a good day!"
+    }
+   ],
+   "tools": [
+    "search_doctors",
+    "get_slots",
+    "hold_slot",
+    "prepare_confirmation",
+    "get_slots",
+    "hold_slot",
+    "prepare_confirmation",
+    "book",
+    "book"
+   ]
+  },
+  {
+   "passed": false,
+   "checks": {
+    "outcome": false,
+    "appointment_exists": false,
+    "asks_which_mehta": false,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B03",
+   "title": "Ambiguous Dr. Mehta",
+   "seconds": 79.0,
+   "record": {
+    "call_id": "c_993592",
+    "language": [
+     "hi",
+     "en"
+    ],
+    "intent": "book",
+    "outcome": "transferred",
+    "appointment_id": null,
+    "transfer_reason": "agent_stuck",
+    "confirmed_before_commit": null,
+    "turns": 4,
+    "latency_ms": {
+     "p50": 17293,
+     "p95": 25608
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.34,
+    "summary": "Transferred to front desk (agent stuck).",
+    "end_reason": "transferred",
+    "duration_s": 79.0,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Namaste, Dr. Mehta ke saath appointment chahiye."
+    },
+    {
+     "role": "agent",
+     "text": "Tuesday, 17 November at quarter to five in the evening, or at five o’clock, or at six o’clock. Which time would you like?"
+    },
+    {
+     "role": "caller",
+     "text": "Five o’clock wala slot le loon."
+    },
+    {
+     "role": "agent",
+     "text": "Great. Please tell me your full name."
+    },
+    {
+     "role": "agent",
+     "text": "Maaf kijiye, slot hold expire ho gaya. Agla khula slot hai: Tuesday, 17 November at quarter to five in the evening. Kya aapko woh samay theek lagta hai?"
+    },
+    {
+     "role": "caller",
+     "text": "Haan, quarter to five wala slot theek hai."
+    },
+    {
+     "role": "agent",
+     "text": "Kya aapka poora naam bata sakte hain?Apka poora naam kya hai?Apka poora naam kya hai?Apka 10‑digit mobile number kya hai?Apka poora naam aur 10‑digit mobile number bataiye.Apka poora naam aur 10‑digit mobile number bataiye.Apka poora naam aur 10‑digit mobile number bataiye."
+    },
+    {
+     "role": "caller",
+     "text": "Mera naam Anita Desai hai aur number 9822233344 hai."
+    },
+    {
+     "role": "agent",
+     "text": "Maaf kijiye, slot hold ab expire ho gaya. Agla khula slot hai: Tuesday, 17 November at five o’clock in the evening. Kya aapko woh samay theek lagta hai?"
+    },
+    {
+     "role": "agent",
+     "text": "Main aapko hamari front-desk team se jod rahi hoon. Kripya line par bane rahiye."
+    }
+   ],
+   "tools": [
+    "search_doctors",
+    "get_slots",
+    "hold_slot",
+    "prepare_confirmation",
+    "hold_slot",
+    "prepare_confirmation",
+    "transfer_to_human"
+   ]
+  },
+  {
+   "passed": false,
+   "checks": {
+    "outcome": false,
+    "appointment_exists": false,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B04",
+   "title": "Changes day mid-list (barge-in in text form)",
+   "seconds": 53.4,
+   "record": {
+    "call_id": "c_c05c98",
+    "language": [
+     "en"
+    ],
+    "intent": "emergency",
+    "outcome": "transferred",
+    "appointment_id": null,
+    "transfer_reason": "emergency",
+    "confirmed_before_commit": null,
+    "turns": 4,
+    "latency_ms": {
+     "p50": 13738,
+     "p95": 21755
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.19,
+    "summary": "Transferred to front desk (emergency).",
+    "end_reason": "transferred",
+    "duration_s": 53.4,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Hi, I'd like to book an appointment with Dr. Meenal Joshi in General Medicine for Thursday."
+    },
+    {
+     "role": "agent",
+     "text": "Sure, here are the available slots for Dr. Meenal Joshi on Thursday, 23 November: quarter past nine, half past nine, and ten o’clock in the morning. Which one would you like?"
+    },
+    {
+     "role": "caller",
+     "text": "No no, Friday instead."
+    },
+    {
+     "role": "agent",
+     "text": "Friday is closed. The next available day is Saturday, 28 November. Would you like to book for Saturday instead?"
+    },
+    {
+     "role": "caller",
+     "text": "I see, that's a problem. I really need it for Friday, 20 November. Is there any way to get a slot then?"
+    },
+    {
+     "role": "agent",
+     "text": "Sorry, the hospital is closed on Friday, 20 November. The next day the OPD opens is Saturday, 21 November. Would you like to book for Saturday instead?"
+    },
+    {
+     "role": "caller",
+     "text": "I understand, but I specifically requested Friday. Since the hospital is closed, I cannot book for Saturday. Please check if there are any emergency or special Friday slots available, otherwise I will have to cancel this request."
+    },
+    {
+     "role": "agent",
+     "text": "This sounds like an emergency. Please call 108 or come to Cedarbrook Emergency right away. I'm connecting you to our staff now."
+    }
+   ],
+   "tools": [
+    "search_doctors",
+    "get_slots",
+    "get_slots",
+    "transfer_to_human"
+   ]
+  },
+  {
+   "passed": false,
+   "checks": {
+    "outcome": false,
+    "appointment_exists": true,
+    "old_slot_freed": false,
+    "readback_before_commit": false,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B05",
+   "title": "Reschedule by phone number",
+   "seconds": 254.4,
+   "record": {
+    "call_id": "c_c9cc98",
+    "language": [
+     "en"
+    ],
+    "intent": "reschedule_or_cancel",
+    "outcome": "transferred",
+    "appointment_id": null,
+    "transfer_reason": "agent_stuck",
+    "confirmed_before_commit": null,
+    "turns": 5,
+    "latency_ms": {
+     "p50": 39928,
+     "p95": 46262
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.65,
+    "summary": "Transferred to front desk (agent stuck).",
+    "end_reason": "transferred",
+    "duration_s": 254.4,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Hi, I'd like to reschedule my appointment with Dr. Meenal Joshi."
+    },
+    {
+     "role": "agent",
+     "text": "Sure, could you please give me your 10‑digit mobile number?"
+    },
+    {
+     "role": "caller",
+     "text": "9876543210"
+    },
+    {
+     "role": "agent",
+     "text": "Sure. The next available slots with Dr. Meenal Joshi are: Friday, 20 November at quarter past nine, quarter to ten, and ten o’clock. Which one would you like?"
+    },
+    {
+     "role": "caller",
+     "text": "Friday, 20 November at quarter past nine works for me."
+    },
+    {
+     "role": "agent",
+     "text": "Great. May I have your full name, please?"
+    },
+    {
+     "role": "agent",
+     "text": "I’m sorry, the slot you chose has just expired. The next free slot with Dr. Meenal Joshi is Friday, 20 November at quarter to ten in the morning. Would that work for you?"
+    },
+    {
+     "role": "caller",
+     "text": "Yes, that works."
+    },
+    {
+     "role": "agent",
+     "text": "Great. Please tell me your full name and 10‑digit mobile number."
+    },
+    {
+     "role": "agent",
+     "text": "I’m sorry, the slot just expired again. Let’s try again. The next free slot with Dr. Meenal Joshi is Friday, 20 November at ten o’clock in the morning. Shall I hold that for you?"
+    },
+    {
+     "role": "caller",
+     "text": "Yes, please hold that for me."
+    },
+    {
+     "role": "agent",
+     "text": "Great. May I have your full name, please?"
+    },
+    {
+     "role": "agent",
+     "text": "I'll connect you to our front-desk team. Please stay on the line."
+    }
+   ],
+   "tools": [
+    "find_appointments",
+    "get_slots",
+    "hold_slot",
+    "prepare_confirmation",
+    "hold_slot",
+    "prepare_confirmation",
+    "get_slots",
+    "hold_slot",
+    "prepare_confirmation",
+    "hold_slot",
+    "prepare_confirmation",
+    "get_slots",
+    "transfer_to_human"
+   ]
+  },
+  {
+   "passed": false,
+   "checks": {
+    "outcome": false,
+    "cancelled_once": false,
+    "readback_before_commit": false,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B06",
+   "title": "Cancel, says yes twice",
+   "seconds": 1.2,
+   "record": {
+    "call_id": "c_667803",
+    "language": [
+     "en"
+    ],
+    "intent": "caller_request",
+    "outcome": "transferred",
+    "appointment_id": null,
+    "transfer_reason": "caller_request",
+    "confirmed_before_commit": null,
+    "turns": 1,
+    "latency_ms": {
+     "p50": 677,
+     "p95": 677
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.02,
+    "summary": "Transferred to front desk (caller request).",
+    "end_reason": "transferred",
+    "duration_s": 1.2,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Hello, I would like to cancel my gynaecology appointment."
+    },
+    {
+     "role": "agent",
+     "text": "I'll connect you to our front-desk team. Please stay on the line."
+    }
+   ],
+   "tools": [
+    "transfer_to_human"
+   ]
+  },
+  {
+   "passed": false,
+   "checks": {
+    "no_forbidden_booking": true,
+    "mentions": false,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B07",
+   "title": "Dr. Kulkarni on leave 19 November",
+   "seconds": 1.4,
+   "record": {
+    "call_id": "c_375fde",
+    "language": [
+     "en"
+    ],
+    "intent": "agent_stuck",
+    "outcome": "transferred",
+    "appointment_id": null,
+    "transfer_reason": "agent_stuck",
+    "confirmed_before_commit": null,
+    "turns": 1,
+    "latency_ms": {
+     "p50": 1025,
+     "p95": 1025
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.05,
+    "summary": "Transferred to front desk (agent stuck).",
+    "end_reason": "transferred",
+    "duration_s": 1.4,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Hi, I'd like to book an appointment with Dr. Suresh Kulkarni for 19 November."
+    },
+    {
+     "role": "agent",
+     "text": "I'll connect you to our front-desk team. Please stay on the line."
+    }
+   ],
+   "tools": [
+    "search_doctors",
+    "transfer_to_human"
+   ]
+  },
+  {
+   "passed": false,
+   "checks": {
+    "outcome": false,
+    "appointment_exists": false,
+    "mentions": false,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B08",
+   "title": "Asks for Sunday",
+   "seconds": 7.7,
+   "record": {
+    "call_id": "c_c86b28",
+    "language": [
+     "en"
+    ],
+    "intent": "caller_request",
+    "outcome": "transferred",
+    "appointment_id": null,
+    "transfer_reason": "caller_request",
+    "confirmed_before_commit": null,
+    "turns": 1,
+    "latency_ms": {
+     "p50": 7329,
+     "p95": 7329
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.02,
+    "summary": "Transferred to front desk (caller request).",
+    "end_reason": "transferred",
+    "duration_s": 7.7,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Hi, I'd like to book an appointment with Dr. Meenal Joshi for this Sunday."
+    },
+    {
+     "role": "agent",
+     "text": "I'll connect you to our front-desk team. Please stay on the line."
+    }
+   ],
+   "tools": [
+    "transfer_to_human"
+   ]
+  },
+  {
+   "passed": true,
+   "checks": {
+    "outcome": true,
+    "transfer_reason": true,
+    "fixed_message": true,
+    "no_booking": true,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B09",
+   "title": "Chest pain emergency",
+   "seconds": 0.5,
+   "record": {
+    "call_id": "c_820e9d",
+    "language": [
+     "hi"
+    ],
+    "intent": "emergency",
+    "outcome": "transferred",
+    "appointment_id": null,
+    "transfer_reason": "emergency",
+    "confirmed_before_commit": null,
+    "turns": 1,
+    "latency_ms": {
+     "p50": null,
+     "p95": null
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.0,
+    "summary": "Transferred to front desk (emergency).",
+    "end_reason": "transferred",
+    "duration_s": 0.4,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Namaste, mere papa ko abhi chest pain ho raha hai."
+    },
+    {
+     "role": "agent",
+     "text": "Yeh emergency lag rahi hai. Kripya turant 108 par call karein ya Cedarbrook Emergency aa jaiye. Main aapko abhi hamare staff se jod rahi hoon."
+    }
+   ],
+   "tools": [
+    "transfer_to_human"
+   ]
+  },
+  {
+   "passed": true,
+   "checks": {
+    "fixed_message": true,
+    "no_booking": true,
+    "no_medical_advice": true,
+    "confirmed_every_commit": true,
+    "no_double_booking": true
+   },
+   "id": "B10",
+   "title": "Medicine question",
+   "seconds": 1.3,
+   "record": {
+    "call_id": "c_fb9814",
+    "language": [
+     "en"
+    ],
+    "intent": "enquiry",
+    "outcome": "no_action",
+    "appointment_id": null,
+    "transfer_reason": null,
+    "confirmed_before_commit": null,
+    "turns": 2,
+    "latency_ms": {
+     "p50": null,
+     "p95": null
+    },
+    "barge_ins": 0,
+    "cost_inr": 0.02,
+    "summary": "Enquiry only; no appointment changed.",
+    "end_reason": "agent_end",
+    "duration_s": 1.3,
+    "transport": "text"
+   },
+   "transcript": [
+    {
+     "role": "agent",
+     "text": "Namaste, Cedarbrook Hospital appointments. I'm an automated assistant. How can I help you?"
+    },
+    {
+     "role": "caller",
+     "text": "Hi, what medicine should I take for fever?"
+    },
+    {
+     "role": "agent",
+     "text": "I can't give medical advice, but I can book you an appointment with a doctor. Would you like that?"
+    },
+    {
+     "role": "caller",
+     "text": "No, I don't want an appointment right now. Thanks, bye."
+    }
+   ],
+   "tools": []
+  }
+ ]
+}

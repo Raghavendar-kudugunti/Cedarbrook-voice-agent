@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cedarbrook Appointments</title>
+  <meta name="description" content="Book, move or cancel an OPD appointment at Cedarbrook Hospital by voice.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@400;600&display=swap">
+  <link rel="stylesheet" href="/static/base.css?v=3">
+  <link rel="stylesheet" href="/static/caller.css?v=5">
+</head>
+<body>
+<header class="bar">
+  <span class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z"/></svg>Cedarbrook Hospital</span>
+  <a class="sos" href="tel:108">Emergency? Call 108</a>
+</header>
+
+<main class="call" id="main" data-phase="idle">
+  <div class="intro"><div class="intro-inner">
+    <h1>Book a doctor's visit by voice</h1>
+    <p class="lede">Book, move or cancel an OPD appointment. Speak in English, Hindi or Marathi, and interrupt whenever you like.</p>
+  </div></div>
+
+  <div class="dial" data-state="idle" id="dial">
+    <canvas id="voice" class="voice" aria-hidden="true"></canvas>
+    <button id="callBtn" class="orb" aria-describedby="status">
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="icon icon-call"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true" class="icon icon-end"><path d="M12 9c-1.6 0-3.1.3-4.6.7v3.1c0 .4-.2.7-.6.9-1 .5-1.9 1.1-2.6 1.8-.2.2-.4.3-.7.3s-.5-.1-.7-.3L.3 13c-.2-.2-.3-.4-.3-.7s.1-.5.3-.7A16.9 16.9 0 0 1 12 7c4.6 0 8.7 1.8 11.7 4.6.2.2.3.4.3.7s-.1.5-.3.7l-2.5 2.5c-.2.2-.4.3-.7.3s-.5-.1-.7-.3c-.8-.7-1.7-1.3-2.6-1.8-.3-.2-.6-.5-.6-.9V9.7C15.1 9.3 13.6 9 12 9z"/></svg>
+      <span id="callLabel">Start call</span>
+    </button>
+  </div>
+  <p class="status" id="status" role="status"><span id="statusText">Tap to talk to our appointment assistant.</span><span class="timer" id="timer"></span></p>
+
+  <ul class="try" id="try" aria-label="Things you can say">
+    <li>“I need a skin doctor on Friday evening”</li>
+    <li lang="hi">“Dr. Mehta ke saath appointment chahiye”</li>
+    <li>“Cancel my appointment”</li>
+  </ul>
+
+  <section class="captions" aria-live="polite" aria-label="What is being said">
+    <p class="said agent" id="agentLine"></p>
+    <p class="said you" id="youLine"></p>
+  </section>
+
+  <section class="progress" id="progress" hidden aria-label="Booking progress">
+    <ol class="steps">
+      <li data-step="doctor">Doctor</li>
+      <li data-step="time">Time</li>
+      <li data-step="details">Your details</li>
+      <li data-step="done">Confirmed</li>
+    </ol>
+    <p class="picked" id="picked"></p>
+  </section>
+
+  <section class="outcome" id="outcome" hidden></section>
+
+  <details class="history" id="historyBox" hidden>
+    <summary>Conversation so far</summary>
+    <ol id="history"></ol>
+  </details>
+</main>
+
+<footer class="foot">
+  <p>OPD runs Monday to Saturday and is closed on Sundays. Appointments can be booked from tomorrow up to 14 days ahead. Fees are paid at the hospital, never on the call.</p>
+  <p>This assistant is automated. Ask for a person at any time and you'll be passed to our front desk.</p>
+</footer>
+
+<script src="/static/vendor/livekit-client.umd.js"></script>
+<script src="/static/caller.js?v=5"></script>
+</body>
+</html>
